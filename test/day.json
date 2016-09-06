@@ -1,0 +1,106 @@
+{
+  "vnstatversion": "1.14",
+  "jsonversion": "1",
+  "interfaces": [
+    {
+      "id": "eth1",
+      "nick": "eth1",
+      "created": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 4
+        }
+      },
+      "updated": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 5
+        },
+        "time": {
+          "hour": 22,
+          "minutes": 37
+        }
+      },
+      "traffic": {
+        "total": {
+          "rx": 0,
+          "tx": 0
+        },
+        "days": [
+          {
+            "id": 0,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 5
+            },
+            "rx": 0,
+            "tx": 0
+          },
+          {
+            "id": 1,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 4
+            },
+            "rx": 0,
+            "tx": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "eth0",
+      "nick": "eth0",
+      "created": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 4
+        }
+      },
+      "updated": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 5
+        },
+        "time": {
+          "hour": 22,
+          "minutes": 37
+        }
+      },
+      "traffic": {
+        "total": {
+          "rx": 168894,
+          "tx": 164824
+        },
+        "days": [
+          {
+            "id": 0,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 5
+            },
+            "rx": 10879,
+            "tx": 10124
+          },
+          {
+            "id": 1,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 4
+            },
+            "rx": 158015,
+            "tx": 154700
+          }
+        ]
+      }
+    }
+  ]
+}
