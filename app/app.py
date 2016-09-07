@@ -7,7 +7,7 @@ app = Flask(__name__)
 def page():
     data = load_json_data()
     df = create_df(data)
-    return result_in_text(df)
+    return result_in_html(df)
 
 
 @app.route("/")

@@ -41,10 +41,8 @@ class TestTraffic(unittest.TestCase):
         self.assertEqual(len(res.index), 3)
 
     def test_result_in_text(self):
-        res = traffic.result_in_text(self.df)
+        res = traffic.result_in_html(self.df)
         print(res)
-
-
 
 
 if __name__ == '__main__':
