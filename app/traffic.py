@@ -32,15 +32,15 @@ def create_df(json_data):
 
 
 def traffic_in_month(df, dt=datetime.datetime.now()):
-    df['total'] = df['in'] + df['out']
+    df['traffic_KB'] = df['in'] + df['out']
     res = df[(df['year'] == dt.year) & (df['month'] == dt.month)]
-    curr = sum(res['total']).item()
-    return res[['year', 'month', 'day', 'total']], curr
+    curr = sum(res['traffic_KB']).item()
+    return res[['year', 'month', 'day', 'traffic_KB']], curr
 
 
 def traffic_in_last_year(df):
     df['total'] = df['in'] + df['out']
-    return df.groupby(['year', 'month'])['total'].sum().reset_index(name='traffic') \
+    return df.groupby(['year', 'month'])['total'].sum().reset_index(name='traffic_KB') \
         .sort_values(by=['year', 'month'], ascending=False).head(12)
 
 
@@ -49,6 +49,6 @@ def result_in_text(df):
     monthly_trends = traffic_in_last_year(df)
     now = datetime.datetime.now()
     month = now.strftime("%B")
-    return "Current Usage in " + month + ": " + str(cur) + "\n\n" + \
+    return "Current Usage in " + month + ": " + in_mb(cur) + "\n\n" + \
            "Daily Trends in " + month + ": \n" + daily_trends.to_string(index=False) + "\n\n" + \
            "Monthly Trends in " + str(now.year) + ": \n" + monthly_trends.to_string(index=False)

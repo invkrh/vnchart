@@ -26,9 +26,9 @@ class TestTraffic(unittest.TestCase):
             {"year": 2001, "month": 6, "day": 3, "in": 5, "out": 5},
             {"year": 2001, "month": 5, "day": 3, "in": 5, "out": 5},
             {"year": 2001, "month": 6, "day": 3, "in": 5, "out": 5},
-            {"year": 2016, "month": 9, "day": 1, "in": 5, "out": 5},
-            {"year": 2016, "month": 9, "day": 2, "in": 5, "out": 5},
-            {"year": 2016, "month": 9, "day": 3, "in": 5, "out": 5},
+            {"year": 2016, "month": 9, "day": 1, "in": 5, "out": 500000},
+            {"year": 2016, "month": 9, "day": 2, "in": 5, "out": 500000},
+            {"year": 2016, "month": 9, "day": 3, "in": 5, "out": 500000},
         ]
     )
 
