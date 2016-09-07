@@ -1,6 +1,8 @@
+import datetime
 import json
-import unittest
 import pandas
+import unittest
+
 
 from app import traffic
 
@@ -32,11 +34,17 @@ class TestTraffic(unittest.TestCase):
 
     def test_monthly_traffic_in_last_year(self):
         res = traffic.traffic_in_last_year(self.df)
-        self.assertEqual(len(res.index), 7)
+        self.assertEqual(len(res.index), 8)
 
     def test_daily_traffic_in_current_month(self):
-        res, cur = traffic.traffic_in_current_month(self.df)
+        res, cur = traffic.traffic_in_month(self.df, datetime.date(2016, 9, 5))
         self.assertEqual(len(res.index), 3)
+
+    def test_result_in_text(self):
+        res = traffic.result_in_text(self.df)
+        print(res)
+
+
 
 
 if __name__ == '__main__':
