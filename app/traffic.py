@@ -17,11 +17,8 @@ def to_mb_int(number):
 
 
 def load_json_data():
-    try:
-        js = subprocess.check_output(["vnstat", "--json", "d"])
-        return json.loads(js)
-    except subprocess.CalledProcessError:
-        print("Please check vnstat version >= 1.14")
+    js = subprocess.check_output(["vnstat", "--json", "d"])
+    return json.loads(js)
 
 
 def create_df(json_data):
