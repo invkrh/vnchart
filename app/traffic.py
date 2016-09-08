@@ -4,8 +4,16 @@ import subprocess
 import pandas
 
 
-def in_mb(number):
-    return format(number / 1024, '.2f') + " MB"
+def prec(number, p=2):
+    return format(number, '.{}f'.format(p))
+
+
+def to_mb_str(number):
+    return prec(number / 1024.0)
+
+
+def to_mb_int(number):
+    return float(to_mb_str(number))
 
 
 def load_json_data():
@@ -34,16 +42,22 @@ def create_df(json_data):
 def traffic_in_month(df, dt=datetime.datetime.now()):
     df['total'] = df['in'] + df['out']
     filtered = df[(df['year'] == dt.year) & (df['month'] == dt.month)]
-    res = filtered.groupby(['year', 'month', 'day'])['total'].sum().reset_index(name='traffic_KB') \
+    res = filtered.groupby(['year', 'month', 'day'])['total'].sum() \
+        .reset_index(name='traffic (MB)') \
         .sort_values(by=['year', 'month', 'day'], ascending=False)
-    curr = sum(res['traffic_KB']).item()
-    return res, curr
+    res['traffic (MB)'] = res['traffic (MB)'].apply(lambda x: to_mb_int(x))
+    curr = sum(res['traffic (MB)']).item()
+    return res, prec(curr)
 
 
 def traffic_in_last_year(df):
     df['total'] = df['in'] + df['out']
-    return df.groupby(['year', 'month'])['total'].sum().reset_index(name='traffic_KB') \
-        .sort_values(by=['year', 'month'], ascending=False).head(12)
+    res = df.groupby(['year', 'month'])['total'].sum() \
+        .reset_index(name='traffic (MB)') \
+        .sort_values(by=['year', 'month'], ascending=False) \
+        .head(12)
+    res['traffic (MB)'] = res['traffic (MB)'].apply(lambda x: to_mb_int(x))
+    return res
 
 
 def result_in_html(df):
@@ -51,7 +65,7 @@ def result_in_html(df):
     monthly_trends = traffic_in_last_year(df)
     now = datetime.datetime.now()
     month = now.strftime("%B")
-    return "Current Usage in " + month + ": " + in_mb(cur) + "<br/><br/>" + \
+    return "Current Usage in " + month + ": " + cur + " MB<br/><br/>" + \
            "Daily Trends in " + month + ": \n" + \
            daily_trends.to_html(index=False) + "<br/><br/>" + \
            "Monthly Trends in " + str(now.year) + ": \n" + \

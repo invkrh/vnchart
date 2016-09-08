@@ -34,10 +34,13 @@ class TestTraffic(unittest.TestCase):
 
     def test_monthly_traffic_in_last_year(self):
         res = traffic.traffic_in_last_year(self.df)
+        print(res)
         self.assertEqual(len(res.index), 8)
 
     def test_daily_traffic_in_current_month(self):
         res, cur = traffic.traffic_in_month(self.df, datetime.date(2016, 9, 5))
+        print(res)
+        print(cur)
         self.assertEqual(len(res.index), 3)
 
     def test_result_in_text(self):
