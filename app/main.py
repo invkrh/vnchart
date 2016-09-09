@@ -15,8 +15,6 @@ def root():
     df = create_df(data)
     daily, curr = traffic_in_month(df)
     monthly = traffic_in_last_year(df)
-    print(daily)
-    print(monthly)
     return render_template('traffic.html', daily=daily, monthly=monthly)
 
 
