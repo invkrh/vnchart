@@ -1,23 +1,25 @@
-from flask import Flask
+from flask import Flask, render_template
 from traffic import *
 
 app = Flask(__name__)
 
 
-def page():
+@app.route("/")
+def root():
     err_msg = "Please check vnstat version >= 1.14"
     try:
-        data = load_json_data()
+        # data = load_json_data()
+        with open('../test/day.json') as data_file:
+            data = json.load(data_file)
     except subprocess.CalledProcessError:
         print(err_msg)
         return err_msg
     df = create_df(data)
-    return result_in_html(df)
-
-
-@app.route("/")
-def root():
-    return page()
+    daily, curr = traffic_in_month(df)
+    monthly = traffic_in_last_year(df)
+    print(daily)
+    print(monthly)
+    return render_template('traffic.html', daily=daily, monthly=monthly)
 
 
 if __name__ == "__main__":

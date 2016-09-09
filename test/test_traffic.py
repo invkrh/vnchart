@@ -1,14 +1,12 @@
-import datetime
+from datetime import datetime, timedelta
 import json
 import pandas
 import unittest
-
 
 from app import traffic
 
 
 class TestTraffic(unittest.TestCase):
-
     def test_create_df(self):
         with open('day.json') as data_file:
             data = json.load(data_file)
@@ -32,16 +30,19 @@ class TestTraffic(unittest.TestCase):
         ]
     )
 
+    def test_daily_traffic_in_current_month(self):
+        dt = datetime.date(2016, 9, 5)
+        res, cur = traffic.traffic_in_month(self.df, dt)
+        print(res)
+        print(cur)
+        self.assertEqual(len(res['xValues']), traffic.day_num_in_month(dt))
+        self.assertEqual(len(res['yValues']), traffic.day_num_in_month(dt))
+
     def test_monthly_traffic_in_last_year(self):
         res = traffic.traffic_in_last_year(self.df)
         print(res)
-        self.assertEqual(len(res.index), 8)
-
-    def test_daily_traffic_in_current_month(self):
-        res, cur = traffic.traffic_in_month(self.df, datetime.date(2016, 9, 5))
-        print(res)
-        print(cur)
-        self.assertEqual(len(res.index), 3)
+        self.assertEqual(len(res['xValues']), 12)
+        self.assertEqual(len(res['yValues']), 12)
 
     def test_result_in_text(self):
         res = traffic.result_in_html(self.df)

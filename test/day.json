@@ -16,11 +16,11 @@
         "date": {
           "year": 2016,
           "month": 9,
-          "day": 5
+          "day": 9
         },
         "time": {
-          "hour": 22,
-          "minutes": 37
+          "hour": 21,
+          "minutes": 48
         }
       },
       "traffic": {
@@ -34,13 +34,53 @@
             "date": {
               "year": 2016,
               "month": 9,
-              "day": 5
+              "day": 9
             },
             "rx": 0,
             "tx": 0
           },
           {
             "id": 1,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 8
+            },
+            "rx": 0,
+            "tx": 0
+          },
+          {
+            "id": 2,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 7
+            },
+            "rx": 0,
+            "tx": 0
+          },
+          {
+            "id": 3,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 6
+            },
+            "rx": 0,
+            "tx": 0
+          },
+          {
+            "id": 4,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 5
+            },
+            "rx": 0,
+            "tx": 0
+          },
+          {
+            "id": 5,
             "date": {
               "year": 2016,
               "month": 9,
@@ -66,17 +106,17 @@
         "date": {
           "year": 2016,
           "month": 9,
-          "day": 5
+          "day": 9
         },
         "time": {
-          "hour": 22,
-          "minutes": 37
+          "hour": 21,
+          "minutes": 48
         }
       },
       "traffic": {
         "total": {
-          "rx": 168894,
-          "tx": 164824
+          "rx": 323951,
+          "tx": 287841
         },
         "days": [
           {
@@ -84,13 +124,53 @@
             "date": {
               "year": 2016,
               "month": 9,
-              "day": 5
+              "day": 9
             },
-            "rx": 10879,
-            "tx": 10124
+            "rx": 6007,
+            "tx": 5864
           },
           {
             "id": 1,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 8
+            },
+            "rx": 15712,
+            "tx": 14536
+          },
+          {
+            "id": 2,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 7
+            },
+            "rx": 33409,
+            "tx": 2450
+          },
+          {
+            "id": 3,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 6
+            },
+            "rx": 99651,
+            "tx": 99762
+          },
+          {
+            "id": 4,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 5
+            },
+            "rx": 11157,
+            "tx": 10529
+          },
+          {
+            "id": 5,
             "date": {
               "year": 2016,
               "month": 9,

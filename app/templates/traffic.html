@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yorozuya Traffic Monthly Usage</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
+    <script src="/static/trends-chart.js"></script>
+</head>
+<body>
+    <canvas id="dailyTrends" width="400" height="400"></canvas>
+    <canvas id="monthlyTrends" width="400" height="400"></canvas>
+    <script>
+        showTrends("dailyTrends", "Daily Trends in September", {{ daily|tojson|safe }})
+        showTrends("monthlyTrends", "Monthly Trends in the last 12 months", {{ monthly|tojson|safe }})
+    </script>
+</body>
+</html>
