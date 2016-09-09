@@ -8,9 +8,7 @@ app = Flask(__name__)
 def root():
     err_msg = "Please check vnstat version >= 1.14"
     try:
-        # data = load_json_data()
-        with open('../test/day.json') as data_file:
-            data = json.load(data_file)
+        data = load_json_data()
     except subprocess.CalledProcessError:
         print(err_msg)
         return err_msg
