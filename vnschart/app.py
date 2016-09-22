@@ -11,9 +11,10 @@ app = Flask(__name__)
 
 class TrafficStat:
 
-    def __init__(self):
+    def __init__(self, raw_hour, raw_day):
         # TODO: vnstat version check
-        pass
+        self.hour_df = self.create_data_frame(raw_hour, 'hours')
+        self.day_df = self.create_data_frame(raw_day, 'days')
 
     def vnstat(self, basis, fmt='json'):
         """Call vnstat cmd in a subprocess
@@ -30,13 +31,15 @@ class TrafficStat:
         stat = subprocess.check_output(["vnstat", '--' + fmt, basis])
         return json.loads(stat)
 
-    def stat_by_hour(self, raw):
-        df = self.create_data_frame(raw, 'hours')
-        return self.indexed_stat(df)
+    def stat_by_hour(self):
+        return self.indexed_stat(self.hour_df)
 
-    def stat_by_day(self, raw):
-        df = self.create_data_frame(raw, 'days')
-        return self.indexed_stat(df)
+    def stat_by_day(self):
+        return self.indexed_stat(self.day_df)
+
+    def current_usage(self):
+        # TODO: filter day in current month
+        return 100
 
     @staticmethod
     def to_mb(x):
@@ -68,14 +71,14 @@ class TrafficStat:
             .groupby(keys)['total'].sum() \
             .reset_index(name='traffic') \
             .sort_values(by=keys)
-        df['traffic'] = df['traffic'] \
-            .apply(TrafficStat.to_mb)
+        df['id'] = df['id'].apply(float)
+        df['traffic'] = df['traffic'].apply(TrafficStat.to_mb)
         return df
 
 
 @app.route("/")
 def root():
-    ts = TrafficStat()
+
     # vnstat_hour = ts.stat('h')
     # vnstat_day = ts.stat('d')
 
@@ -84,9 +87,11 @@ def root():
     with open('tests/day.json') as data_file:
         vnstat_day = json.load(data_file)
 
-    h = ts.stat_by_hour(vnstat_hour)
-    d = ts.stat_by_day(vnstat_day)
-    return render_template('index.html', hourly=h, daily=d)
+    ts = TrafficStat(vnstat_hour, vnstat_day)
+    return render_template('index.html',
+                           hourly=ts.stat_by_hour(),
+                           daily=ts.stat_by_day(),
+                           usage=ts.current_usage())
 
     # try:
     #     data = get_vnstat_data()
