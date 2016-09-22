@@ -79,9 +79,6 @@ def root():
     # vnstat_hour = ts.stat('h')
     # vnstat_day = ts.stat('d')
 
-    import os
-    cwd = os.getcwd()
-    print cwd
     with open('tests/hour.json') as data_file:
         vnstat_hour = json.load(data_file)
     with open('tests/day.json') as data_file:

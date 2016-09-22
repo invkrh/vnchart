@@ -7,9 +7,9 @@ from vnschart.app import TrafficStat
 class TestTrafficStat(unittest.TestCase):
     ts = TrafficStat()
 
-    with open('hour.json') as data_file:
+    with open('tests/hour.json') as data_file:
         raw_stat_hour = json.load(data_file)
-    with open('day.json') as data_file:
+    with open('tests/day.json') as data_file:
         raw_stat_day = json.load(data_file)
 
     def test_vnstat(self):
