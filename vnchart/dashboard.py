@@ -20,7 +20,7 @@ def vnstat(basis, fmt='json'):
 
     fmt: 'json' or 'xml'
     """
-    assert basis == 'h' or basis == 'd'
+    assert basis == 'h' or basis == 'd' or basis == 'm'
     assert fmt == 'xml' or fmt == 'json'
     stat = subprocess.check_output(["vnstat", '--' + fmt, basis])
     return json.loads(stat)
