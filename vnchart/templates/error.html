@@ -1,10 +1,10 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Network Traffic Dashboard</title>
-
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
@@ -19,31 +19,14 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
-    <script src="/static/trends-chart.js"></script>
 </head>
 
 <body>
-    <div class="page-header">
-        <h1 align="center">Current Month Usage: {{ usage }} </h1>
+    <div class="alert alert-danger  alert-dismissible fade in" role="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <h4 class="alert-heading">Error</h4>
+        <p>{{ msg }}</p>
     </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-lg-6">
-                <canvas id="hourly" width="400" height="400"></canvas>
-            </div>
-            <div class="col-xs-12 col-lg-6">
-                <canvas id="daily" width="400" height="400"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        showTrends("hourly", "Last 24 Hours", {{ hourly|tojson|safe }})
-        showTrends("daily", "Last 30 Days", {{ daily|tojson|safe }})
-    </script>
 </body>
 
 </html>

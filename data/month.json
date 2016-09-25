@@ -1,0 +1,84 @@
+{
+  "vnstatversion": "1.14",
+  "jsonversion": "1",
+  "interfaces": [
+    {
+      "id": "eth1",
+      "nick": "eth1",
+      "created": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 4
+        }
+      },
+      "updated": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 25
+        },
+        "time": {
+          "hour": 12,
+          "minutes": 24
+        }
+      },
+      "traffic": {
+        "total": {
+          "rx": 0,
+          "tx": 0
+        },
+        "months": [
+          {
+            "id": 0,
+            "date": {
+              "year": 2016,
+              "month": 9
+            },
+            "rx": 0,
+            "tx": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "eth0",
+      "nick": "eth0",
+      "created": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 4
+        }
+      },
+      "updated": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 25
+        },
+        "time": {
+          "hour": 12,
+          "minutes": 24
+        }
+      },
+      "traffic": {
+        "total": {
+          "rx": 589887,
+          "tx": 571688
+        },
+        "months": [
+          {
+            "id": 0,
+            "date": {
+              "year": 2016,
+              "month": 9
+            },
+            "rx": 589887,
+            "tx": 571688
+          }
+        ]
+      }
+    }
+  ]
+}

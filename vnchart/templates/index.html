@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Network Traffic Dashboard</title>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+        crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.2/Chart.bundle.min.js"></script>
+    <!-- 
+        import Momentjs, since Chartjs does not give access to Momentjs, like its doc said:
+        see: https://github.com/chartjs/Chart.js/issues/2906
+     -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+    <script src="/static/trends-chart.js"></script>
+</head>
+
+<body>
+    <div class="page-header">
+        <h1 align="center">Network Data Transfer in {{ month }}
+            <br/>
+            <br/>
+            <strong>{{ usage }} MB </strong>
+
+        </h1>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-lg-6">
+                <canvas id="hourly" <!--width="400" height="400" -->
+                    ></canvas>
+            </div>
+            <div class="col-xs-12 col-lg-6">
+                <canvas id="daily" <!--width="400" height="400" -->
+                    ></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        showTrends("hourly", "Last 24 Hours (MB)", {{ hourly|tojson|safe }})
+        showTrends("daily", "Last 30 Days (MB)", {{ daily|tojson|safe }})
+    </script>
+</body>
+
+</html>
