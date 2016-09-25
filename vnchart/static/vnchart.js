@@ -1,10 +1,10 @@
 function last(n, unit) {
     if (unit == 'hour') {
-        return moment().minute(0).second(0).add(-n, 'h');
+        return moment().tz("America/Los_Angeles").minute(0).second(0).add(-n, 'h');
     }
 
     if (unit == 'day') {
-        return moment().hour(0).minute(0).second(0).add(-n, 'd');
+        return moment().tz("America/Los_Angeles").hour(0).minute(0).second(0).add(-n, 'd');
     }
 }
 

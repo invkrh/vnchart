@@ -63,6 +63,7 @@ def current_month():
     mydate = datetime.datetime.now()
     return mydate.strftime("%B")
 
+
 def current_usage(vnstat):
     usage = 0
     for ifc in vnstat['interfaces']:
