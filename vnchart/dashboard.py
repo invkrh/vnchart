@@ -33,40 +33,51 @@ def stats_data(vnstat, unit_key):
     def hour_key(elem):
         dt = elem['date']  # id is hour
         return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
-                        hour=elem['id'], tzinfo=pytz.UTC) \
-            + timedelta(hours=1)  # adjust to the end of the period
+                        hour=elem['id'], tzinfo=pytz.UTC)
 
     def day_key(elem):
         dt = elem['date']
         return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
-                        tzinfo=pytz.UTC) \
-            + timedelta(days=1)
+                        tzinfo=pytz.UTC)
 
     if unit_key == 'hours':
         key = hour_key
+        # give more space for the last bar on chart
+        key_inc = lambda x: x + timedelta(hours=1) 
     elif unit_key == 'days':
         key = day_key
+        key_inc = lambda x: x + timedelta(days=0)
     else:
         raise ValueError("Argument [ unit_key ] should be {'hours', 'days'}")
 
     datasets = []
+    labels = None
     for ifc in vnstat['interfaces']:
         if_id = ifc['id']
 
+        # Start from the most recent
         traffic = sorted([(key(elem), kb_to_mb(elem['rx']), kb_to_mb(elem['tx']))
-                          for elem in ifc['traffic'][unit_key]], reverse=True)
+                          for elem in ifc['traffic'][unit_key]], key=lambda x: x[0])
+
+        if not labels:
+            labels = [x[0] for x in traffic]
+            labels.append(key_inc(labels[-1]))
+
         dataset_in = {
             "label": if_id + '-in',
-            'transfer': [(x[0].isoformat(), x[1]) for x in traffic]
+            'transfer': [(x[1]) for x in traffic]
         }
         dataset_out = {
             "label": if_id + '-out',
-            'transfer': [(x[0].isoformat(), x[2]) for x in traffic]
+            'transfer': [(x[2]) for x in traffic]
         }
         datasets.append(dataset_in)
         datasets.append(dataset_out)
 
-    return datasets
+    return {
+        "labels": labels,
+        "datasets": datasets
+    }
 
 
 def kb_to_mb(num):

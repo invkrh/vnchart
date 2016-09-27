@@ -24,30 +24,25 @@ function showTrends(chartId, titleText, stats) {
     }
 
 
-    datasets = stats.map(
+    datasets = stats['datasets'].map(
         function (dataset, i) {
             return {
                 label: dataset['label'],
-                data: dataset['transfer'].map(
-                    function (point) {
-                        return {
-                            x: moment.parseZone(point[0]),
-                            y: point[1],
-                        }
-                    }
-                ),
+                data: dataset['transfer'],
                 backgroundColor: getColor(i)
             }
         }
     )
 
+    var size = stats['labels'].length
     var ctx = document.getElementById(chartId);
     var data = {
+        labels: stats['labels'],
         datasets: datasets
     };
 
     var scatterChart = new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: data,
         options: {
             responsive: true,
@@ -72,21 +67,15 @@ function showTrends(chartId, titleText, stats) {
 
                     ticks: {
                         callback: function (dataLabel, index) {
-                            return dataLabel
-                            // if (index === 0) {
-                            //     return dataLabel
-                            // }
-                            // else if (index === points.idx.length) {
-                            //     // show the end of the last period
-                            //     return dataLabel
-                            // } 
-                            // else if (index % Math.floor(stats['max_offset'] / 4) === 0) {
-                            //     return dataLabel
+                            // if (index % Math.floor(size / 3) === 0) {
+                                return dataLabel
                             // } else {
                             //     return null
                             // }
                         }
-                    }
+                    },
+                    categoryPercentage: 0.8,
+                    stacked: true
                 }],
                 yAxes: [{
                     stacked: true
