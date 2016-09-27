@@ -93,13 +93,21 @@ def read_json(json_file):
 def dashboard(mode):
     if mode == 'debug':
         # Debug on server without vnstat >= 1.14
-        vnstat_hour = read_json('data/debug/hour.json')
-        vnstat_day = read_json('data/debug/day.json')
-        vnstat_month = read_json('data/debug/month.json')
+        try:
+            vnstat_hour = read_json('data/debug/hour.json')
+            vnstat_day = read_json('data/debug/day.json')
+            vnstat_month = read_json('data/debug/month.json')
+        except IOError as err:
+            app.logger.error(err)
+            return render_template('error.html', msg=err)
     elif mode == 'demo':
-        vnstat_hour = read_json('data/demo/hour.json')
-        vnstat_day = read_json('data/demo/day.json')
-        vnstat_month = read_json('data/demo/month.json')
+        try:
+            vnstat_hour = read_json('data/demo/hour.json')
+            vnstat_day = read_json('data/demo/day.json')
+            vnstat_month = read_json('data/demo/month.json')
+        except IOError as err:
+            app.logger.error(err)
+            return render_template('error.html', msg=err)
     elif mode == '':
         try:
             vnstat_hour = vnstat('h')
