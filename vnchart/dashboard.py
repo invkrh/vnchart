@@ -145,7 +145,7 @@ def dashboard(mode):
                            daily=stats_data(vnstat_day, 'days'),
                            usage=current_usage(vnstat_month))
 
-
+@app.route("/") # Leave for home page
 @app.route("/vnchart")
 def vnchart():
     return dashboard("")
