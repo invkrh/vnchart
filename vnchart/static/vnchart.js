@@ -1,13 +1,3 @@
-function last(n, unit) {
-    if (unit == 'hour') {
-        return moment().utc().minute(0).second(0).add(-n, 'h');
-    }
-
-    if (unit == 'day') {
-        return moment().utc().hour(0).minute(0).second(0).add(-n, 'd');
-    }
-}
-
 var colors = [
     'rgba(154, 18, 179, 1)',
     'rgba(46, 204, 113 ,1)',
@@ -41,7 +31,7 @@ function showTrends(chartId, titleText, stats) {
                 data: dataset['transfer'].map(
                     function (point) {
                         return {
-                            x: moment(point[0]),
+                            x: moment.parseZone(point[0]),
                             y: point[1],
                         }
                     }
@@ -51,14 +41,10 @@ function showTrends(chartId, titleText, stats) {
         }
     )
 
-    
-
     var ctx = document.getElementById(chartId);
     var data = {
         datasets: datasets
     };
-
-    console.log(datasets[0])
 
     var scatterChart = new Chart(ctx, {
         type: 'line',
@@ -101,7 +87,6 @@ function showTrends(chartId, titleText, stats) {
                             // }
                         }
                     }
-                    // stacked: true
                 }],
                 yAxes: [{
                     stacked: true

@@ -28,17 +28,19 @@ def vnstat(unit, fmt='json'):
 
 def stats_data(vnstat, unit_key):
     from datetime import datetime, timedelta
+    import pytz
 
     def hour_key(elem):
-        dt = elem['date'] # id is hour
+        dt = elem['date']  # id is hour
         return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
-                        hour=elem['id']) \
-            + timedelta(hours=1) # adjust to the end of the period
+                        hour=elem['id'], tzinfo=pytz.UTC) \
+            + timedelta(hours=1)  # adjust to the end of the period
 
     def day_key(elem):
         dt = elem['date']
-        return datetime(year=dt['year'], month=dt['month'], day=dt['day']) \
-            + timedelta(days=1) # adjust to the end of the period
+        return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
+                        tzinfo=pytz.UTC) \
+            + timedelta(days=1)
 
     if unit_key == 'hours':
         key = hour_key
@@ -121,7 +123,6 @@ def dashboard(mode):
     else:
         raise ValueError("Argument [ mode ] should be {'debug', 'demo', ''}")
 
-
     return render_template('index.html',
                            month=current_month(),
                            hourly=stats_data(vnstat_hour, 'hours'),
@@ -133,9 +134,11 @@ def dashboard(mode):
 def index():
     return dashboard("")
 
+
 @app.route("/demo")
 def demo():
     return dashboard("demo")
+
 
 @app.route("/debug")
 def debug():
