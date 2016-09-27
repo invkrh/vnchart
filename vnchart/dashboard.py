@@ -146,17 +146,17 @@ def dashboard(mode):
                            usage=current_usage(vnstat_month))
 
 
-@app.route("/")
-def index():
+@app.route("/vnchart")
+def vnchart():
     return dashboard("")
 
 
-@app.route("/demo")
+@app.route("/vnchart/demo")
 def demo():
     return dashboard("demo")
 
 
-@app.route("/debug")
+@app.route("/vnchart/debug")
 def debug():
     return dashboard("debug")
 
