@@ -1,8 +1,8 @@
 var colors = [
-    'rgba(154, 18, 179, 1)',
-    'rgba(46, 204, 113 ,1)',
-    'rgba(242, 38, 19, 1)',
-    'rgba(65, 131, 215, 1)'
+    'rgba(242, 38, 19, 1)', // red
+    'rgba(65, 131, 215, 1)', // blue
+    'rgba(154, 18, 179, 1)', // purple
+    'rgba(46, 204, 113 ,1)' // green
 ]
 
 function getColor(i) {

@@ -43,7 +43,7 @@ def stats_data(vnstat, unit_key):
     if unit_key == 'hours':
         key = hour_key
         # give more space for the last bar on chart
-        key_inc = lambda x: x + timedelta(hours=1) 
+        key_inc = lambda x: x + timedelta(hours=1)
     elif unit_key == 'days':
         key = day_key
         key_inc = lambda x: x + timedelta(days=0)
@@ -63,16 +63,21 @@ def stats_data(vnstat, unit_key):
             labels = [x[0] for x in traffic]
             labels.append(key_inc(labels[-1]))
 
+        rx = [(x[1]) for x in traffic]
         dataset_in = {
             "label": if_id + '-in',
-            'transfer': [(x[1]) for x in traffic]
+            'transfer': rx
         }
+
+        tx = [(x[2]) for x in traffic]
         dataset_out = {
             "label": if_id + '-out',
-            'transfer': [(x[2]) for x in traffic]
+            'transfer': tx
         }
-        datasets.append(dataset_in)
-        datasets.append(dataset_out)
+
+        if any(float(v) != 0 for v in rx) or any(float(v) != 0 for v in tx):
+            datasets.append(dataset_in)
+            datasets.append(dataset_out)
 
     return {
         "labels": labels,
