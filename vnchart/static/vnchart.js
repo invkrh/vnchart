@@ -14,7 +14,7 @@ function showTrends(chartId, titleText, stats) {
     if (chartId == 'hourly') {
         var unit = 'hour'
         var timeUnitFmt = 'HH:00'
-        var tooltipFmt = 'ddd MMM DD, HH:00'
+        var tooltipFmt = 'ddd MMM DD, HH:--'
     }
 
     if (chartId == 'daily') {
