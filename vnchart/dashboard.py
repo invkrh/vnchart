@@ -10,7 +10,7 @@ from flask import Flask, render_template
 app = Flask(__name__)
 
 
-def vnstat(basis, fmt='json'):
+def vnstat(unit, fmt='json'):
     """Call vnstat cmd in a subprocess
 
     basis:
@@ -20,38 +20,51 @@ def vnstat(basis, fmt='json'):
 
     fmt: 'json' or 'xml'
     """
-    assert basis == 'h' or basis == 'd' or basis == 'm'
+    assert unit == 'h' or unit == 'd' or unit == 'm'
     assert fmt == 'xml' or fmt == 'json'
-    stat = subprocess.check_output(["vnstat", '--' + fmt, basis])
+    stat = subprocess.check_output(["vnstat", '--' + fmt, unit])
     return json.loads(stat)
 
 
-def stats_data(vnstat, basis):
+def stats_data(vnstat, unit_key):
+    from datetime import datetime, timedelta
+
+    def hour_key(elem):
+        dt = elem['date'] # id is hour
+        return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
+                        hour=elem['id']) \
+            + timedelta(hours=1) # adjust to the end of the period
+
+    def day_key(elem):
+        dt = elem['date']
+        return datetime(year=dt['year'], month=dt['month'], day=dt['day']) \
+            + timedelta(days=1) # adjust to the end of the period
+
+    if unit_key == 'hours':
+        key = hour_key
+    elif unit_key == 'days':
+        key = day_key
+    else:
+        raise ValueError("Argument [ unit_key ] should be {'hours', 'days'}")
+
     datasets = []
     for ifc in vnstat['interfaces']:
         if_id = ifc['id']
-        offsets = []
-        in_mb = []
-        out_mb = []
-        for elem in ifc['traffic'][basis]:
-            offsets.append(elem['id'])
-            in_mb.append(kb_to_mb(elem['rx']))
-            out_mb.append(kb_to_mb(elem['tx']))
+
+        traffic = sorted([(key(elem), kb_to_mb(elem['rx']), kb_to_mb(elem['tx']))
+                          for elem in ifc['traffic'][unit_key]], reverse=True)
         dataset_in = {
-            "interface": if_id + '-in',
-            'transfer': in_mb
+            "label": if_id + '-in',
+            'transfer': [(x[0].isoformat(), x[1]) for x in traffic]
         }
         dataset_out = {
-            "interface": if_id + '-out',
-            'transfer': out_mb
+            "label": if_id + '-out',
+            'transfer': [(x[0].isoformat(), x[2]) for x in traffic]
         }
         datasets.append(dataset_in)
         datasets.append(dataset_out)
 
-    return {
-        'datasets': datasets,
-        'offsets': offsets
-    }
+    return datasets
 
 
 def kb_to_mb(num):
@@ -77,13 +90,17 @@ def read_json(json_file):
         return json.load(data_file)
 
 
-def dashboard(is_demo=False):
-    if is_demo:
+def dashboard(mode):
+    if mode == 'debug':
         # Debug on server without vnstat >= 1.14
-        vnstat_hour = read_json('data/hour.json')
-        vnstat_day = read_json('data/day.json')
-        vnstat_month = read_json('data/month.json')
-    else:
+        vnstat_hour = read_json('data/debug/hour.json')
+        vnstat_day = read_json('data/debug/day.json')
+        vnstat_month = read_json('data/debug/month.json')
+    elif mode == 'demo':
+        vnstat_hour = read_json('data/demo/hour.json')
+        vnstat_day = read_json('data/demo/day.json')
+        vnstat_month = read_json('data/demo/month.json')
+    elif mode == '':
         try:
             vnstat_hour = vnstat('h')
             vnstat_day = vnstat('d')
@@ -93,6 +110,9 @@ def dashboard(is_demo=False):
                 ' '.join(err.cmd), err.output.decode("utf-8").rstrip())
             app.logger.error(msg)
             return render_template('error.html', msg=msg)
+    else:
+        raise ValueError("Argument [ mode ] should be {'debug', 'demo', ''}")
+
 
     return render_template('index.html',
                            month=current_month(),
@@ -102,13 +122,17 @@ def dashboard(is_demo=False):
 
 
 @app.route("/")
-def root():
-    return dashboard()
-
+def index():
+    return dashboard("")
 
 @app.route("/demo")
 def demo():
-    return dashboard(is_demo=True)
+    return dashboard("demo")
+
+@app.route("/debug")
+def debug():
+    return dashboard("debug")
+
 
 if __name__ == "__main__":
 

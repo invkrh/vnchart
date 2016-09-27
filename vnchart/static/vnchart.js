@@ -1,10 +1,10 @@
 function last(n, unit) {
     if (unit == 'hour') {
-        return moment().tz("America/Los_Angeles").minute(0).second(0).add(-n, 'h');
+        return moment().utc().minute(0).second(0).add(-n, 'h');
     }
 
     if (unit == 'day') {
-        return moment().tz("America/Los_Angeles").hour(0).minute(0).second(0).add(-n, 'd');
+        return moment().utc().hour(0).minute(0).second(0).add(-n, 'd');
     }
 }
 
@@ -24,47 +24,44 @@ function showTrends(chartId, titleText, stats) {
     if (chartId == 'hourly') {
         var unit = 'hour'
         var timeUnitFmt = 'HH:00'
-        var tooltipFmt = 'ddd MMM DD, HH:00 + [1h]'
+        var tooltipFmt = 'ddd MMM DD, HH:00'
     }
 
     if (chartId == 'daily') {
         var unit = 'day'
         var timeUnitFmt = 'MMM DD'
-        var tooltipFmt = 'ddd MMM DD + [1d]'
+        var tooltipFmt = 'ddd MMM DD'
     }
 
-    datasets = stats['datasets'].map(
+
+    datasets = stats.map(
         function (dataset, i) {
-            // alert(getColor(i))
             return {
-                label: dataset['interface'],
-                data: dataset['transfer'],
+                label: dataset['label'],
+                data: dataset['transfer'].map(
+                    function (point) {
+                        return {
+                            x: moment(point[0]),
+                            y: point[1],
+                        }
+                    }
+                ),
                 backgroundColor: getColor(i)
             }
         }
     )
 
-    size = stats['offsets'].length
+    
 
     var ctx = document.getElementById(chartId);
     var data = {
-        /**
-         *  xValues are indices start from 0, 1, 2, ...
-         *  whose value is used as backoff step,
-         *  hence, it means from now to past
-         *  while yValues represents the same thing
-         * 
-         *  When displaying the chart, (x, y) pair will
-         *  be arranged by the ascendant order of x 
-         *  (starts from the smallest timestamp at origin).
-         */
-        labels: stats['offsets'].map(function (num) {
-            return last(num, unit);
-        }),
         datasets: datasets
     };
+
+    console.log(datasets[0])
+
     var scatterChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: data,
         options: {
             responsive: true,
@@ -89,21 +86,22 @@ function showTrends(chartId, titleText, stats) {
 
                     ticks: {
                         callback: function (dataLabel, index) {
-                            if (index === 0) {
-                                return dataLabel
-                            }
+                            return dataLabel
+                            // if (index === 0) {
+                            //     return dataLabel
+                            // }
                             // else if (index === points.idx.length) {
                             //     // show the end of the last period
                             //     return dataLabel
                             // } 
-                            else if (index % Math.floor(size / 4) === 0) {
-                                return dataLabel
-                            } else {
-                                return null
-                            }
+                            // else if (index % Math.floor(stats['max_offset'] / 4) === 0) {
+                            //     return dataLabel
+                            // } else {
+                            //     return null
+                            // }
                         }
-                    },
-                    stacked: true
+                    }
+                    // stacked: true
                 }],
                 yAxes: [{
                     stacked: true
