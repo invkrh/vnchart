@@ -27,12 +27,18 @@
 
 <body>
     <div class="page-header">
-        <h1 align="center">Network Data Transfer in {{ month }}
+        <h1 class="text-center">Network Data Transfer in {{ month }}
             <br/>
             <br/>
-            <strong>{{ usage }} MB </strong>
-
+            <strong>{{ usage['curr'] }} MB</strong>
         </h1>
+        <h3 class="text-center">
+            {% if usage['last'] %}
+                Last month ({{ last_month }}): {{ usage['last'] }} MB 
+            {% else %}
+                Not record for last month 
+            {% endif %}
+        </h3>
     </div>
 
     <div class="container">

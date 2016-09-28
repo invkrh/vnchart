@@ -1,11 +1,13 @@
 import logging
 import json
+import pytz
 import subprocess
 
+from datetime import datetime, timedelta
+from flask import Flask, render_template
 from logging import Formatter
 from logging.handlers import TimedRotatingFileHandler
 
-from flask import Flask, render_template
 
 app = Flask(__name__)
 
@@ -27,8 +29,6 @@ def vnstat(unit, fmt='json'):
 
 
 def stats_data(vnstat, unit_key):
-    from datetime import datetime, timedelta
-    import pytz
 
     def hour_key(elem):
         dt = elem['date']  # id is hour
@@ -46,6 +46,7 @@ def stats_data(vnstat, unit_key):
         key_inc = lambda x: x + timedelta(hours=1)
     elif unit_key == 'days':
         key = day_key
+        # no space needed for day chart
         key_inc = lambda x: x + timedelta(days=0)
     else:
         raise ValueError("Argument [ unit_key ] should be {'hours', 'days'}")
@@ -79,28 +80,37 @@ def stats_data(vnstat, unit_key):
             datasets.append(dataset_in)
             datasets.append(dataset_out)
 
-    return {
-        "labels": labels,
-        "datasets": datasets
-    }
+    return {"labels": labels, "datasets": datasets}
 
 
 def kb_to_mb(num):
     return "%.2f" % (num / 1024.0)
 
 
-def current_month():
-    import datetime
-    mydate = datetime.datetime.now()
-    return mydate.strftime("%B")
+def month_name():
+    date = datetime.now()
+    return date.strftime("%B")
 
 
-def current_usage(vnstat):
-    usage = 0
+def last_month_name():
+    first = datetime.now().replace(day=1)
+    lastMonth = first - timedelta(days=1)
+    return lastMonth.strftime("%B")
+
+
+def curr_last_trans(vnstat):
+    curr_trans = 0
+    last_trans = 0
     for ifc in vnstat['interfaces']:
         curr = ifc['traffic']['months'][0]
-        usage += curr["rx"] + curr["tx"]
-    return kb_to_mb(usage)
+        curr_trans += curr["rx"] + curr["tx"]
+        if len(ifc['traffic']['months']) >= 2:
+            last = ifc['traffic']['months'][1]
+            last_trans += last["rx"] + last["tx"]
+    return {
+        'curr': kb_to_mb(curr_trans),
+        'last': None if last_trans == 0 else kb_to_mb(last_trans)
+    }
 
 
 def read_json(json_file):
@@ -109,24 +119,17 @@ def read_json(json_file):
 
 
 def dashboard(mode):
-    if mode == 'debug':
+    assert mode == 'demo' or mode == 'debug'
+    if mode:
         # Debug on server without vnstat >= 1.14
         try:
-            vnstat_hour = read_json('data/debug/hour.json')
-            vnstat_day = read_json('data/debug/day.json')
-            vnstat_month = read_json('data/debug/month.json')
+            vnstat_hour = read_json('data/' + mode + '/hour.json')
+            vnstat_day = read_json('data/' + mode + '/day.json')
+            vnstat_month = read_json('data/' + mode + '/month.json')
         except IOError as err:
             app.logger.error(err)
             return render_template('error.html', msg=err)
-    elif mode == 'demo':
-        try:
-            vnstat_hour = read_json('data/demo/hour.json')
-            vnstat_day = read_json('data/demo/day.json')
-            vnstat_month = read_json('data/demo/month.json')
-        except IOError as err:
-            app.logger.error(err)
-            return render_template('error.html', msg=err)
-    elif mode == '':
+    else:
         try:
             vnstat_hour = vnstat('h')
             vnstat_day = vnstat('d')
@@ -136,27 +139,26 @@ def dashboard(mode):
                 ' '.join(err.cmd), err.output.decode("utf-8").rstrip())
             app.logger.error(msg)
             return render_template('error.html', msg=msg)
-    else:
-        raise ValueError("Argument [ mode ] should be {'debug', 'demo', ''}")
 
     return render_template('index.html',
-                           month=current_month(),
+                           month=month_name(),
+                           last_month=last_month_name(),
                            hourly=stats_data(vnstat_hour, 'hours'),
                            daily=stats_data(vnstat_day, 'days'),
-                           usage=current_usage(vnstat_month))
-
-@app.route("/") # Leave for home page
-@app.route("/vnchart")
-def vnchart():
-    return dashboard("")
+                           usage=curr_last_trans(vnstat_month))
 
 
-@app.route("/vnchart/demo")
+@app.route("/")
+def index():
+    return dashboard(None)
+
+
+@app.route("/demo")
 def demo():
     return dashboard("demo")
 
 
-@app.route("/vnchart/debug")
+@app.route("/debug")
 def debug():
     return dashboard("debug")
 
