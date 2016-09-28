@@ -117,9 +117,12 @@ def read_json(json_file):
     with open(json_file) as data_file:
         return json.load(data_file)
 
+def handle_error(err):
+    app.logger.error(err)
+    return render_template('error.html', msg=err)
+
 
 def dashboard(mode):
-    assert mode == 'demo' or mode == 'debug'
     if mode:
         # Debug on server without vnstat >= 1.14
         try:
@@ -127,8 +130,7 @@ def dashboard(mode):
             vnstat_day = read_json('data/' + mode + '/day.json')
             vnstat_month = read_json('data/' + mode + '/month.json')
         except IOError as err:
-            app.logger.error(err)
-            return render_template('error.html', msg=err)
+            handle_error(err)
     else:
         try:
             vnstat_hour = vnstat('h')
