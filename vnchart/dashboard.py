@@ -117,6 +117,7 @@ def read_json(json_file):
     with open(json_file) as data_file:
         return json.load(data_file)
 
+
 def handle_error(err):
     app.logger.error(err)
     return render_template('error.html', msg=err)

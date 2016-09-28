@@ -67,8 +67,9 @@ function showTrends(chartId, titleText, stats) {
 
                     ticks: {
                         callback: function (dataLabel, index) {
+                            return dataLabel
                             // if (index % Math.floor(size / 3) === 0) {
-                                return dataLabel
+                            //     return dataLabel
                             // } else {
                             //     return null
                             // }
