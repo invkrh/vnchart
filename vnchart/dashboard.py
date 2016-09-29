@@ -8,7 +8,6 @@ from flask import Flask, render_template
 from logging import Formatter
 from logging.handlers import TimedRotatingFileHandler
 
-
 app = Flask(__name__)
 
 
@@ -28,41 +27,42 @@ def vnstat(unit, fmt='json'):
     return json.loads(stat)
 
 
-def stats_data(vnstat, unit_key):
-
-    def hour_key(elem):
-        dt = elem['date']  # id is hour
+def stats_data(vnstat_dict, unit_key):
+    def hour_key(date_elem):
+        dt = date_elem['date']  # id is hour
         return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
-                        hour=elem['id'], tzinfo=pytz.UTC)
+                        hour=date_elem['id'], tzinfo=pytz.UTC)
 
-    def day_key(elem):
-        dt = elem['date']
+    def day_key(date_elem):
+        dt = date_elem['date']
         return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
                         tzinfo=pytz.UTC)
 
     if unit_key == 'hours':
-        key = hour_key
-        # give more space for the last bar on chart
-        key_inc = lambda x: x + timedelta(hours=1)
+        key_by = hour_key
+        # def key_inc(dt):
+            # give more space for the last bar on chart
+            # return dt + timedelta(hours=1)
     elif unit_key == 'days':
-        key = day_key
-        # no space needed for day chart
-        key_inc = lambda x: x + timedelta(days=0)
+        key_by = day_key
+        # def key_inc(dt):
+            # no space needed for day chart
+            # return dt
     else:
         raise ValueError("Argument [ unit_key ] should be {'hours', 'days'}")
 
     datasets = []
     labels = None
-    for ifc in vnstat['interfaces']:
+    for ifc in vnstat_dict['interfaces']:
         if_id = ifc['id']
 
         # Start from the most recent
-        traffic = sorted([(key(elem), kb_to_mb(elem['rx']), kb_to_mb(elem['tx']))
-                          for elem in ifc['traffic'][unit_key]], key=lambda x: x[0])
+        traffic = sorted([(key_by(elem), kb_to_mb(elem['rx']), kb_to_mb(elem['tx']))
+                          for elem in ifc['traffic'][unit_key]], key=lambda k: k[0])
 
         if not labels:
             labels = [x[0] for x in traffic]
-            labels.append(key_inc(labels[-1]))
+            # labels.append(key_inc(labels[-1]))
 
         rx = [(x[1]) for x in traffic]
         dataset_in = {
@@ -94,14 +94,14 @@ def month_name():
 
 def last_month_name():
     first = datetime.now().replace(day=1)
-    lastMonth = first - timedelta(days=1)
-    return lastMonth.strftime("%B")
+    last_month = first - timedelta(days=1)
+    return last_month.strftime("%B")
 
 
-def curr_last_trans(vnstat):
+def last_two_month_trans(vnstat_dict):
     curr_trans = 0
     last_trans = 0
-    for ifc in vnstat['interfaces']:
+    for ifc in vnstat_dict['interfaces']:
         curr = ifc['traffic']['months'][0]
         curr_trans += curr["rx"] + curr["tx"]
         if len(ifc['traffic']['months']) >= 2:
@@ -118,20 +118,22 @@ def read_json(json_file):
         return json.load(data_file)
 
 
-def handle_error(err):
-    app.logger.error(err)
-    return render_template('error.html', msg=err)
+def error_page(err_msg):
+    app.logger.error(err_msg)
+    return render_template('error.html', msg=err_msg)
 
 
 def dashboard(mode):
     if mode:
         # Debug on server without vnstat >= 1.14
         try:
-            vnstat_hour = read_json('data/' + mode + '/hour.json')
-            vnstat_day = read_json('data/' + mode + '/day.json')
-            vnstat_month = read_json('data/' + mode + '/month.json')
+            import os
+            data_dir = os.path.dirname(__file__) + "/../data"
+            vnstat_hour = read_json(data_dir + '/' + mode + '/hour.json')
+            vnstat_day = read_json(data_dir + '/' + mode + '/day.json')
+            vnstat_month = read_json(data_dir + '/' + mode + '/month.json')
         except IOError as err:
-            handle_error(err)
+            return error_page(err)
     else:
         try:
             vnstat_hour = vnstat('h')
@@ -140,15 +142,14 @@ def dashboard(mode):
         except subprocess.CalledProcessError as err:
             msg = 'Command [ {} ] ends with [ {} ]'.format(
                 ' '.join(err.cmd), err.output.decode("utf-8").rstrip())
-            app.logger.error(msg)
-            return render_template('error.html', msg=msg)
+            return error_page(msg)
 
     return render_template('index.html',
                            month=month_name(),
                            last_month=last_month_name(),
                            hourly=stats_data(vnstat_hour, 'hours'),
                            daily=stats_data(vnstat_day, 'days'),
-                           usage=curr_last_trans(vnstat_month))
+                           usage=last_two_month_trans(vnstat_month))
 
 
 @app.route("/")
@@ -159,11 +160,6 @@ def index():
 @app.route("/demo")
 def demo():
     return dashboard("demo")
-
-
-@app.route("/debug")
-def debug():
-    return dashboard("debug")
 
 
 if __name__ == "__main__":

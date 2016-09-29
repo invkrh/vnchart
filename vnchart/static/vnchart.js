@@ -75,6 +75,10 @@ function showTrends(chartId, titleText, stats) {
                             // }
                         }
                     },
+                    gridLines: {
+                        display: false,
+                        offsetGridLines: false
+                    },
                     categoryPercentage: 0.8,
                     stacked: true
                 }],
