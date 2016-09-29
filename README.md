@@ -7,6 +7,12 @@ A tiny python web app to show network traffic of a sever with vnstat.
 
 Thanks [@vergoh](https://github.com/vergoh) for all the work on `vnstat`
 
+## Demo
+
+To give you an idea on what it looks like, you could have a look at the following page.
+
+[Here](http://vps.invkrh.me/demo)
+
 ## Requirements
 
 * [vnstat >= 1.4](http://humdi.net/vnstat/)
@@ -38,7 +44,3 @@ python run.py
 ## Configuration
 
 If you want to change port, please check `run.py` file
-
-## Demo
-[Here](http://vps.invkrh.me/demo)
-
