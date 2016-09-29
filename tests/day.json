@@ -1,0 +1,426 @@
+{
+  "vnstatversion": "1.14",
+  "jsonversion": "1",
+  "interfaces": [
+    {
+      "id": "eth1",
+      "nick": "eth1",
+      "created": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 4
+        }
+      },
+      "updated": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 21
+        },
+        "time": {
+          "hour": 19,
+          "minutes": 44
+        }
+      },
+      "traffic": {
+        "total": {
+          "rx": 1800,
+          "tx": 1800
+        },
+        "days": [
+          {
+            "id": 0,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 21
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 1,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 20
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 2,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 19
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 3,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 18
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 4,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 17
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 5,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 16
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 6,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 15
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 7,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 14
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 8,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 13
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 9,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 12
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 10,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 11
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 11,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 10
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 12,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 9
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 13,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 8
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 14,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 7
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 15,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 6
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 16,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 5
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 17,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 4
+            },
+            "rx": 100,
+            "tx": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "eth0",
+      "nick": "eth0",
+      "created": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 4
+        }
+      },
+      "updated": {
+        "date": {
+          "year": 2016,
+          "month": 9,
+          "day": 21
+        },
+        "time": {
+          "hour": 19,
+          "minutes": 44
+        }
+      },
+      "traffic": {
+        "total": {
+          "rx": 1800,
+          "tx": 1800
+        },
+        "days": [
+          {
+            "id": 0,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 21
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 1,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 20
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 2,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 19
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 3,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 18
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 4,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 17
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 5,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 16
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 6,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 15
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 7,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 14
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 8,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 13
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 9,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 12
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 10,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 11
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 11,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 10
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 12,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 9
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 13,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 8
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 14,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 7
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 15,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 6
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 16,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 5
+            },
+            "rx": 100,
+            "tx": 100
+          },
+          {
+            "id": 17,
+            "date": {
+              "year": 2016,
+              "month": 9,
+              "day": 4
+            },
+            "rx": 100,
+            "tx": 100
+          }
+        ]
+      }
+    }
+  ]
+}
