@@ -10,7 +10,7 @@ install:
   - pip install codecov
 
 script:
-  - coverage run tests.py
+  - coverage run tests/test_dashboard.py
 
 after_success:
   - codecov
