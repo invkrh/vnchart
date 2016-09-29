@@ -5,7 +5,7 @@
 
 A tiny python web app to show network traffic of a sever with vnstat.
 
-Thanks @vergoh for all the work on `vnstat`
+Thanks [@vergoh](https://github.com/vergoh) for all the work on `vnstat`
 
 ## Requirements
 
