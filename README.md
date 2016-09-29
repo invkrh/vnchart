@@ -40,5 +40,5 @@ python run.py
 If you want to change port, please check `run.py` file
 
 ## Demo
-[vps.invkrh.me/demo](vps.invkrh.me/demo)
+[Here](http://vps.invkrh.me/demo)
 
