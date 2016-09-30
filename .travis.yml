@@ -10,16 +10,7 @@ install:
   - pip install pytest-cov
   - pip install -r requirements.txt
 
-sudo: required
-
 script:
-  - wget http://humdi.net/vnstat/vnstat-1.15.tar.gz
-  - tar zxf vnstat-1.15.tar.gz
-  - cd vnstat-1.15
-  - ./configure --prefix=/usr --sysconfdir=/etc && make
-  - sudo make install
-  - cd -
-  - vnstat --version
   - py.test --cov=vnchart/
 
 after_success:

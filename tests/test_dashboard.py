@@ -89,8 +89,6 @@ class TestApp(unittest.TestCase):
             with self.assertRaises(ValueError):
                 dashboard("unknow")
             self.assertTrue('1134.35' in dashboard("demo"))
-            print(dashboard(""))
-            self.assertTrue('Error' not in dashboard(""))
 
 
 if __name__ == '__main__':
