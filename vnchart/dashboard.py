@@ -1,12 +1,12 @@
 import logging
 import json
-import pytz
 import subprocess
 
 from datetime import datetime, timedelta
 from flask import Flask, render_template
 from logging import Formatter
 from logging.handlers import TimedRotatingFileHandler
+from tzlocal import get_localzone
 
 app = Flask(__name__)
 
@@ -28,55 +28,74 @@ def vnstat(unit, fmt='json'):
 
 
 def stats_data(vnstat_dict, unit_key):
+
+    tz = get_localzone()
+
     def hour_key(date_elem):
-        dt = date_elem['date']  # id is hour
-        return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
-                        hour=date_elem['id'], tzinfo=pytz.UTC)
+        date = date_elem['date']
+        return tz.localize(
+            datetime(
+                year=date['year'],
+                month=date['month'],
+                day=date['day'],
+                hour=date_elem['id']),
+            is_dst=None)  # id is hour
 
     def day_key(date_elem):
-        dt = date_elem['date']
-        return datetime(year=dt['year'], month=dt['month'], day=dt['day'],
-                        tzinfo=pytz.UTC)
+        date = date_elem['date']
+        return tz.localize(
+            datetime(
+                year=date['year'],
+                month=date['month'],
+                day=date['day']),
+            is_dst=None)
 
     if unit_key == 'hours':
         key_by = hour_key
-        # def key_inc(dt):
-            # give more space for the last bar on chart
-            # return dt + timedelta(hours=1)
+
+        def key_inc(dt_key):
+            return dt_key + timedelta(hours=1)
     elif unit_key == 'days':
         key_by = day_key
-        # def key_inc(dt):
-            # no space needed for day chart
-            # return dt
+
+        def key_inc(dt_key):
+            return dt_key + timedelta(days=1)
     else:
         raise ValueError("Argument [ unit_key ] should be {'hours', 'days'}")
 
     datasets = []
     labels = None
+
     for ifc in vnstat_dict['interfaces']:
         if_id = ifc['id']
 
-        # Start from the most recent
+        # start from the most recent
         traffic = sorted([(key_by(elem), kb_to_mb(elem['rx']), kb_to_mb(elem['tx']))
                           for elem in ifc['traffic'][unit_key]], key=lambda k: k[0])
 
+        # only init labels once
         if not labels:
-            labels = [x[0] for x in traffic]
-            # labels.append(key_inc(labels[-1]))
+            dt_list = [x[0] for x in traffic]
+            # add one more tick for the last bar on chart
+            dt_list.append(key_inc(dt_list[-1]))
+            labels = [str(dt) for dt in dt_list]
 
-        rx = [(x[1]) for x in traffic]
+        # create received data list
+        rx_list = [(x[1]) for x in traffic]
         dataset_in = {
             "label": if_id + '-in',
-            'transfer': rx
+            'transfer': rx_list
         }
 
-        tx = [(x[2]) for x in traffic]
+        # create sent data list
+        tx_list = [(x[2]) for x in traffic]
         dataset_out = {
             "label": if_id + '-out',
-            'transfer': tx
+            'transfer': tx_list
         }
 
-        if any(float(v) != 0 for v in rx) or any(float(v) != 0 for v in tx):
+        # filter zero values
+        if any(float(v) != 0 for v in rx_list) or any(float(v) != 0 for v in tx_list):
             datasets.append(dataset_in)
             datasets.append(dataset_out)
 
@@ -104,6 +123,7 @@ def last_two_month_trans(vnstat_dict):
     for ifc in vnstat_dict['interfaces']:
         curr = ifc['traffic']['months'][0]
         curr_trans += curr["rx"] + curr["tx"]
+        # compute last month's data only when exists
         if len(ifc['traffic']['months']) >= 2:
             last = ifc['traffic']['months'][1]
             last_trans += last["rx"] + last["tx"]
@@ -119,22 +139,22 @@ def read_json(json_file):
 
 
 def error_page(err_msg):
-    app.logger.error(err_msg)
     return render_template('error.html', msg=err_msg)
 
 
 def dashboard(mode):
-    if mode:
-        # Debug on server without vnstat >= 1.14
+    if mode == 'demo':
+        # for servers without vnstat >= 1.14
+        # using generated json
         try:
             import os
             data_dir = os.path.dirname(__file__) + "/../data"
-            vnstat_hour = read_json(data_dir + '/' + mode + '/hour.json')
-            vnstat_day = read_json(data_dir + '/' + mode + '/day.json')
-            vnstat_month = read_json(data_dir + '/' + mode + '/month.json')
+            vnstat_hour = read_json(data_dir + '/demo/hour.json')
+            vnstat_day = read_json(data_dir + '/demo/day.json')
+            vnstat_month = read_json(data_dir + '/demo/month.json')
         except IOError as err:
             return error_page(err)
-    else:
+    elif mode == '':
         try:
             vnstat_hour = vnstat('h')
             vnstat_day = vnstat('d')
@@ -143,6 +163,8 @@ def dashboard(mode):
             msg = 'Command [ {} ] ends with [ {} ]'.format(
                 ' '.join(err.cmd), err.output.decode("utf-8").rstrip())
             return error_page(msg)
+    else:
+        raise ValueError("Argument [ mode ] should be {'demo', ''}")
 
     return render_template('index.html',
                            month=month_name(),
@@ -154,7 +176,7 @@ def dashboard(mode):
 
 @app.route("/")
 def index():
-    return dashboard(None)
+    return dashboard("")
 
 
 @app.route("/demo")
@@ -173,14 +195,14 @@ if __name__ == "__main__":
         if exception.errno != errno.EEXIST:
             raise
 
-    handler = TimedRotatingFileHandler('../log/vps-traffic.log',
-                                       when="midnight",
-                                       # when="S",
-                                       # interval=1,
-                                       backupCount=5)
-    handler.setFormatter(Formatter(
-        '%(asctime)s %(levelname)s: %(message)s [in %(module)s:%(lineno)d]'
-    ))
-    handler.setLevel(logging.INFO)
-    app.logger.addHandler(handler)
+    # handler = TimedRotatingFileHandler('../log/vps-traffic.log',
+    #                                    when="midnight",
+    #                                    # when="S",
+    #                                    # interval=1,
+    #                                    backupCount=5)
+    # handler.setFormatter(Formatter(
+    #     '%(asctime)s %(levelname)s: %(message)s [in %(module)s:%(lineno)d]'
+    # ))
+    # handler.setLevel(logging.INFO)
+    # app.logger.addHandler(handler)
     app.run()
