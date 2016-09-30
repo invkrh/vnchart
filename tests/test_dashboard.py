@@ -64,17 +64,32 @@ class TestApp(unittest.TestCase):
         # self.assertTrue(vnstat(unit='h'))
 
     def test_stats_data(self):
+        with self.assertRaises(ValueError):
+            stats_data(None, 'unknown')
+
         def case(file_name, unit, nb):
             import os
             test_dir = os.path.dirname(__file__)
-            json = read_json(os.path.join(test_dir, file_name))
-            dict = stats_data(json, unit)
-            self.assertEqual(len(dict['labels']), nb)
-            self.assertEqual(len(dict['datasets']), 4)
-            ts = [len(x['transfer']) == nb for x in dict['datasets']]
+            vnstat_json = read_json(os.path.join(test_dir, file_name))
+            ret_dict = stats_data(vnstat_json, unit)
+            self.assertEqual(len(ret_dict['labels']), nb + 1)
+            self.assertEqual(len(ret_dict['datasets']), 4)
+            ts = [len(x['transfer']) == nb for x in ret_dict['datasets']]
             self.assertTrue(all(ts))
         case('hour.json', 'hours', 24)
         case('day.json', 'days', 18)
+
+    def test_error_page(self):
+        with app.app_context():
+            msg = "test"
+            self.assertTrue(msg in error_page(msg))
+
+    def test_dashboard(self):
+        with app.app_context():
+            with self.assertRaises(ValueError):
+                dashboard("unknow")
+            self.assertTrue('1134.35' in dashboard("demo"))
+            self.assertTrue('Error' not in dashboard(""))
 
 
 if __name__ == '__main__':
