@@ -1,6 +1,8 @@
+import errno
 import logging
 import json
 import subprocess
+import os
 
 from datetime import datetime, timedelta
 from flask import Flask, render_template
@@ -9,6 +11,27 @@ from logging.handlers import TimedRotatingFileHandler
 from tzlocal import get_localzone
 
 app = Flask(__name__)
+
+curr_dir = os.path.dirname(__file__)
+data_dir = curr_dir + "/../data"
+log_dir = curr_dir + "/../logs"
+
+# Setup logging
+try:
+    os.makedirs(log_dir)
+except OSError as exception:
+    if exception.errno != errno.EEXIST:
+        raise
+
+handler = TimedRotatingFileHandler(log_dir + '/vnchart.log',
+                                   when="H",
+                                   interval=1,
+                                   backupCount=24)
+handler.setFormatter(Formatter(
+    '%(asctime)s %(levelname)s: %(message)s [in %(module)s:%(lineno)d]'
+))
+handler.setLevel(logging.INFO)
+app.logger.addHandler(handler)
 
 
 def vnstat(unit, fmt='json'):
@@ -24,11 +47,10 @@ def vnstat(unit, fmt='json'):
     assert unit == 'h' or unit == 'd' or unit == 'm'
     assert fmt == 'xml' or fmt == 'json'
     stat = subprocess.check_output(["vnstat", '--' + fmt, unit])
-    return json.loads(stat)
+    return json.loads(stat.decode("utf-8"))
 
 
 def stats_data(vnstat_dict, unit_key):
-
     tz = get_localzone()
 
     def hour_key(date_elem):
@@ -147,8 +169,7 @@ def dashboard(mode):
         # for servers without vnstat >= 1.14
         # using generated json
         try:
-            import os
-            data_dir = os.path.dirname(__file__) + "/../data"
+
             vnstat_hour = read_json(data_dir + '/demo/hour.json')
             vnstat_day = read_json(data_dir + '/demo/day.json')
             vnstat_month = read_json(data_dir + '/demo/month.json')
@@ -185,24 +206,4 @@ def demo():
 
 
 if __name__ == "__main__":
-
-    import os
-    import errno
-
-    try:
-        os.makedirs("../log")
-    except OSError as exception:
-        if exception.errno != errno.EEXIST:
-            raise
-
-    # handler = TimedRotatingFileHandler('../log/vps-traffic.log',
-    #                                    when="midnight",
-    #                                    # when="S",
-    #                                    # interval=1,
-    #                                    backupCount=5)
-    # handler.setFormatter(Formatter(
-    #     '%(asctime)s %(levelname)s: %(message)s [in %(module)s:%(lineno)d]'
-    # ))
-    # handler.setLevel(logging.INFO)
-    # app.logger.addHandler(handler)
     app.run()

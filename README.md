@@ -15,6 +15,8 @@ To give you a quick idea on what it looks like, you could have a look at the fol
 
 ## Requirements
 
+* python 2.7 or 3.5
+
 * [vnstat >= 1.14](http://humdi.net/vnstat/)
     
     - **ubutun / debian**: 
@@ -31,16 +33,13 @@ To give you a quick idea on what it looks like, you could have a look at the fol
         ```
     - **source**: 
         
-        If the version is not satisfied, you can always install it from source.
-        Take a look at INSTALL file in the source zip file
+        Take a look at `INSTALL` file in the source zip file. Normally, there will be no more lib deps to install.
         
         ```bash
         $ ./configure --prefix=/usr --sysconfdir=/etc && make
         $ make install
         ```
     - **Check version**: `vnstat --version`
-         
-* python 2.7 or 3.5
 
 ## Features
 
@@ -53,22 +52,26 @@ To give you a quick idea on what it looks like, you could have a look at the fol
 * UI Chart
     -   reponsive
     -   filter dataset by clicking on legend
+    -   all the leading zeor-value bar will not be shown
     
 ## Install
 
 ```bash
-cd /path/to/vnstat
+git clone https://github.com/invkrh/vnchart.git
+cd vnstat
 pip install -r requirements.txt
 ```
-
     
 ## Run
 
 ```bash
-cd /path/to/vnstat
-python run.py
+./start.sh
 ```
 
 ## Configuration
 
-If you want to change port, please check `run.py` file
+If you want to change port(default: `8080`), please check `start.sh` file.
+
+## Troubleshooting
+
+Check `./logs` which is hourly rotated within the recent 24 hours

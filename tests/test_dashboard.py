@@ -1,6 +1,6 @@
 import unittest
 
-from vnchart.dashboard import *
+from dashboard.app import *
 
 
 class TestApp(unittest.TestCase):
