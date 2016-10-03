@@ -11,7 +11,7 @@ Thanks [@vergoh](https://github.com/vergoh) for all the work on `vnstat`
 
 To give you a quick idea on what it looks like, you could have a look at the following page.
 
-[Here](http://vps.invkrh.me:8080/demo)
+[Here](http://vps.invkrh.me/demo)
 
 ## Requirements
 
@@ -50,9 +50,9 @@ To give you a quick idea on what it looks like, you could have a look at the fol
     -   last 30 days
 
 * UI Chart
-    -   reponsive
+    -   responsive
     -   filter dataset by clicking on legend
-    -   all the leading zeor-value bar will not be shown
+    -   all the leading zeor-value bars will not be shown
     
 ## Install
 
@@ -70,7 +70,7 @@ pip install -r requirements.txt
 
 ## Configuration
 
-If you want to change port(default: `8080`), please check `start.sh` file.
+If you want to change port(default: `80`, only available for root), please check `start.sh` file.
 
 ## Troubleshooting
 
