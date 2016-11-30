@@ -164,8 +164,20 @@ def error_page(err_msg):
     return render_template('error.html', msg=err_msg)
 
 
-def dashboard(mode):
-    if mode == 'demo':
+def dashboard(mode=None):
+    if not mode:
+        try:
+            vnstat_hour = vnstat('h')
+            vnstat_day = vnstat('d')
+            vnstat_month = vnstat('m')
+        except subprocess.CalledProcessError as err:
+            msg = 'Command [ {} ] ends with [ {} ]'.format(
+                ' '.join(err.cmd), err.output.decode("utf-8").rstrip())
+            return error_page(msg)
+        except FileNotFoundError:
+            msg = '[ vnstat ] is not installed on server'
+            return error_page(msg)
+    elif mode == 'demo':
         # for servers without vnstat >= 1.14
         # using generated json
         try:
@@ -175,15 +187,6 @@ def dashboard(mode):
             vnstat_month = read_json(data_dir + '/demo/month.json')
         except IOError as err:
             return error_page(err)
-    elif mode == '':
-        try:
-            vnstat_hour = vnstat('h')
-            vnstat_day = vnstat('d')
-            vnstat_month = vnstat('m')
-        except subprocess.CalledProcessError as err:
-            msg = 'Command [ {} ] ends with [ {} ]'.format(
-                ' '.join(err.cmd), err.output.decode("utf-8").rstrip())
-            return error_page(msg)
     else:
         raise ValueError("Argument [ mode ] should be {'demo', ''}")
 
@@ -197,7 +200,7 @@ def dashboard(mode):
 
 @app.route("/")
 def index():
-    return dashboard("")
+    return dashboard()
 
 
 @app.route("/demo")
