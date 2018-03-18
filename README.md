@@ -58,7 +58,7 @@ To give you a quick idea on what it looks like, you could have a look at the fol
 
 ```bash
 git clone https://github.com/invkrh/vnchart.git
-cd vnstat
+cd vnchart
 pip install -r requirements.txt
 ```
     
